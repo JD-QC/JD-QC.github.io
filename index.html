@@ -1,30 +1,246 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Website ni Donny Pangilinan</title>
-  <style>
-	div {
-		font-family: fantasy;
-		font-size: 50px;
-		text-align: center;
-		color: green;
-		background: black;
-		font-weight: 900;
-	}
-	.johnrex {
-		text-decoration: line-through;
-	}
-		
-  </style>
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Created by Justin Drew</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .header {
+            margin-bottom: 60px;
+            text-align: center;
+        }
+
+        .animated-title {
+            font-size: 3em;
+            font-weight: bold;
+            color: white;
+            letter-spacing: 2px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+            animation: slideInDown 1s ease-out, glow 3s ease-in-out infinite;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes glow {
+            0%, 100% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 10px rgba(255, 255, 255, 0.5);
+            }
+            50% {
+                text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3), 0 0 20px rgba(255, 255, 255, 0.8);
+            }
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        .image-slot {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            cursor: grab;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .image-slot:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+        }
+
+        .image-slot:active {
+            cursor: grabbing;
+        }
+
+        .image-content {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            color: white;
+            user-select: none;
+            position: relative;
+        }
+
+        .image-content.dragging {
+            opacity: 0.9;
+        }
+
+        .image-slot:nth-child(1) .image-content {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .image-slot:nth-child(2) .image-content {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .image-slot:nth-child(3) .image-content {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .label {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .drag-hint {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.7em;
+            opacity: 0.7;
+        }
+
+        @media (max-width: 768px) {
+            .animated-title {
+                font-size: 2em;
+            }
+
+            .container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .image-slot {
+                width: 100%;
+                max-width: 250px;
+                margin: 0 auto;
+            }
+        }
+    </style>
+</head>
 <body>
-	<div>
-		<p>Tang Ina Mo Po<3</p>
-		<p>EMEL OH?</p>
-		<p class="johnrex">johnrex kalbo</p>
-	<br>
-		<p>© Justin Drew Pogi</p>
-	</div>
+    <div class="header">
+        <h1 class="animated-title">Created by JUSTIN DREW</h1>
+    </div>
+
+    <div class="container">
+        <div class="image-slot">
+            <div class="drag-hint">Touch & Drag</div>
+            <div class="image-content">🎨</div>
+            <div class="label">Image 1</div>
+        </div>
+
+        <div class="image-slot">
+            <div class="drag-hint">Touch & Drag</div>
+            <div class="image-content">🖼️</div>
+            <div class="label">Image 2</div>
+        </div>
+
+        <div class="image-slot">
+            <div class="drag-hint">Touch & Drag</div>
+            <div class="image-content">✨</div>
+            <div class="label">Image 3</div>
+        </div>
+    </div>
+
+    <script>
+        let offsetX = 0;
+        let offsetY = 0;
+        let isDragging = false;
+
+        const imageSlots = document.querySelectorAll('.image-slot');
+
+        imageSlots.forEach(slot => {
+            // Touch events for mobile devices
+            slot.addEventListener('touchstart', (e) => {
+                isDragging = true;
+                const touch = e.touches[0];
+                const rect = slot.getBoundingClientRect();
+                offsetX = touch.clientX - rect.left;
+                offsetY = touch.clientY - rect.top;
+                slot.querySelector('.image-content').classList.add('dragging');
+            });
+
+            slot.addEventListener('touchmove', (e) => {
+                if (!isDragging) return;
+                const touch = e.touches[0];
+                const moveX = touch.clientX - offsetX;
+                const moveY = touch.clientY - offsetY;
+                slot.style.transform = `translate(${moveX - slot.getBoundingClientRect().left}px, ${moveY - slot.getBoundingClientRect().top}px)`;
+            });
+
+            slot.addEventListener('touchend', () => {
+                isDragging = false;
+                slot.querySelector('.image-content').classList.remove('dragging');
+                slot.style.transform = 'translate(0, 0)';
+            });
+
+            // Mouse events for desktop
+            slot.addEventListener('mousedown', (e) => {
+                isDragging = true;
+                const rect = slot.getBoundingClientRect();
+                offsetX = e.clientX - rect.left;
+                offsetY = e.clientY - rect.top;
+                slot.querySelector('.image-content').classList.add('dragging');
+            });
+
+            slot.addEventListener('mousemove', (e) => {
+                if (!isDragging) return;
+                const moveX = e.clientX - offsetX;
+                const moveY = e.clientY - offsetY;
+                slot.style.transform = `translate(${moveX - slot.getBoundingClientRect().left}px, ${moveY - slot.getBoundingClientRect().top}px)`;
+            });
+
+            slot.addEventListener('mouseup', () => {
+                isDragging = false;
+                slot.querySelector('.image-content').classList.remove('dragging');
+                slot.style.transform = 'translate(0, 0)';
+            });
+
+            slot.addEventListener('mouseleave', () => {
+                isDragging = false;
+                slot.querySelector('.image-content').classList.remove('dragging');
+                slot.style.transform = 'translate(0, 0)';
+            });
+        });
+    </script>
 </body>
 </html>
